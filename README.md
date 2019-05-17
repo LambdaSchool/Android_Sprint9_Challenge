@@ -1,3 +1,5 @@
+Spencer Stock
+
 # Additional Android Sprint Challenge
 
 ## Instructions
