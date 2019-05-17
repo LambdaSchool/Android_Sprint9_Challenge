@@ -36,6 +36,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     FusedLocationProviderClient fusedLocationProviderClient;
     int markerNumber = 0;
     LatLng position;
+    Marker focusedMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         context = this;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -59,22 +59,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.center_map:
+
+            case R.id.center_map: //center map on current location
                 if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                     ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
                 }else{
                     getLocation();
                 }
                 break;
-            case R.id.place_pin:
+            case R.id.place_pin: //place pin on center of map
                 position = mMap.getCameraPosition().target;
                 markerNumber++;
-                mMap.addMarker(new MarkerOptions().position(position).title("Added marker "+ markerNumber));
+                mMap.addMarker(new MarkerOptions().position(position).title("Added marker ("+ markerNumber + ") (ActionButton)"));
                 mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
                 mediaPlayer.start();
                 break;
-            case R.id.remove_pin:
-                mMap.clear();
+            case R.id.remove_pin: // remove pin focused by clicking it
+                markerNumber--;
+                focusedMarker.remove();
 
 
 
@@ -86,15 +88,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        LatLng sydney = new LatLng(-34, 151);
-
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // refocus map to center on
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                marker.remove();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                marker.showInfoWindow();
+                focusedMarker = marker;
                 return true;
             }
         });
@@ -102,7 +102,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions().position(latLng).title("clicked marker").draggable(true));
+                markerNumber++;
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Marker Number ( " + markerNumber + " ) (Clicked)").draggable(true));
             }
         });
     }
@@ -129,9 +130,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions().position(position).title("Your Location"));
             }
         });
-    }
-    public void removemarkerManager(Marker position){
-               position.remove();
-
     }
 }
