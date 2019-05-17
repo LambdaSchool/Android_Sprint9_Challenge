@@ -4,18 +4,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="Center"
+    <item
         android:id="@+id/options_center"
         android:icon="@drawable/ic_center_24dp"
-        app:showAsAction="always"/>
-    <item android:title="Marker"
+        android:title="Center"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/options_marker"
         android:icon="@drawable/ic_marker_24dp"
-        app:showAsAction="always"/>
-    <item android:title="Map"
+        android:title="Marker"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/options_map"
         android:icon="@drawable/ic_map_24dp"
-        app:showAsAction="always"/>
+        android:title="Map"
+        app:showAsAction="always" />
     <item
         android:id="@+id/options_sound_effects"
         android:title="♫"

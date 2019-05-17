@@ -4,19 +4,26 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,7 +58,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
+
+
+//        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, assetArrayList);
+//        stringArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//        final Spinner spinner = findViewById(R.id.);
+//        spinner.setAdapter(stringArrayAdapter);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String assetText = null;
+//                String itemSelected = parent.getItemAtPosition(position).toString();
+//
+//                if (itemSelected.equals(DEFAULT_CIPHER)) {
+//                    assetText = getString(R.string.cipher);
+//                } else {
+//                    FileIO fileIO = new FileIO(context);
+//                    assetText = fileIO.readFileBuffered(itemSelected);
+//                }
+//                textViewCipher.setText(assetText);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
     }
+
 
     @Override
     public void onMapReady(GoogleMap gMap) {
@@ -131,8 +164,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.options_sound_effects);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.spinner_items, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setBackground(null);
+        //spinner.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
