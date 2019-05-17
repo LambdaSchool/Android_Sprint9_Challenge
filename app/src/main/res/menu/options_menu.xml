@@ -5,16 +5,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:title="Center"
-        android:icon=""
+        android:id="@+id/options_center"
+        android:icon="@drawable/ic_center_24dp"
         app:showAsAction="always"/>
     <item android:title="Marker"
-        android:icon=""
+        android:id="@+id/options_marker"
+        android:icon="@drawable/ic_marker_24dp"
+        app:showAsAction="always"/>
+    <item android:title="Map"
+        android:id="@+id/options_map"
+        android:icon="@drawable/ic_map_24dp"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/spinner"
-        android:title="Sound"
+        android:id="@+id/options_sound_effects"
+        android:title="♫"
         app:actionViewClass="android.widget.Spinner"
-
-        android:background="#ff00"
         app:showAsAction="always" />
 </menu>
