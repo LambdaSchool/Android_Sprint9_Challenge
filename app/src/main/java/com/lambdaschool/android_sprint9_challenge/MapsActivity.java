@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
@@ -133,6 +134,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(target));
+
+                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.sound_effect_5);
+                mediaPlayer.start();
 
                 break;
 
