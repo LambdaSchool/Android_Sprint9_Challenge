@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android_Sprint9_Challenge</string>
+    <string name="app_name">Sprint9</string>
     <string name="title_activity_maps">Map</string>
     <array name="spinner_items">
         <item>♫ 1</item>

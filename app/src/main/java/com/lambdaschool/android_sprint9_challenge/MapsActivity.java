@@ -3,6 +3,7 @@ package com.lambdaschool.android_sprint9_challenge;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -40,7 +41,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final static int[] GOOGLE_MAP_TYPE_INT_ARRAY = new int[]{GoogleMap.MAP_TYPE_NONE, GoogleMap.MAP_TYPE_NORMAL, GoogleMap.MAP_TYPE_SATELLITE, GoogleMap.MAP_TYPE_TERRAIN, GoogleMap.MAP_TYPE_HYBRID};
+    private static final String SHARED_PREFERENCES_SOUND_EFFECT = "sound_effect";
     private static final int LOCATION_REQUEST_CODE = 33;
+    private int sharedPreferencesSoundEffect;
     private GoogleMap googleMap;
     private Context context;
 
@@ -50,6 +53,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
 
         context = this;
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+        sharedPreferencesSoundEffect = sharedPreferences.getInt(SHARED_PREFERENCES_SOUND_EFFECT, 5);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
@@ -104,7 +110,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                final MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
+                final MediaPlayer mediaPlayer = MediaPlayer.create(context, SoundEffectsFactory.SOUND_EFFECTS_IDS[sharedPreferencesSoundEffect]);
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
@@ -171,7 +177,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setBackground(null);
-        //spinner.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                sharedPreferencesSoundEffect = position;
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE);
+                SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+                sharedPreferencesEditor.putInt(SHARED_PREFERENCES_SOUND_EFFECT, sharedPreferencesSoundEffect);
+                sharedPreferencesEditor.apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         return true;
     }
@@ -203,7 +225,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(target));
 
-                final MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
+                final MediaPlayer mediaPlayer = MediaPlayer.create(context, SoundEffectsFactory.SOUND_EFFECTS_IDS[sharedPreferencesSoundEffect]);
                 mediaPlayer.start();
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
