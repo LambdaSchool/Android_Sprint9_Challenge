@@ -71,8 +71,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
+                final MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
                 mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mediaPlayer.release();
+                    }
+                });
             }
         });
 
@@ -154,8 +160,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(target));
 
-                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
+                final MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
                 mediaPlayer.start();
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mediaPlayer.release();
+                    }
+                });
 
                 break;
 
