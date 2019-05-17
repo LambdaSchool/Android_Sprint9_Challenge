@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             } break;
 
             case R.id.main_toolbar_add_marker: {
-                addMarker();
+                addMarkerToCenter();
             } break;
 
             case R.id.main_toolbar_settings: {
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -101,6 +101,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 marker.remove();
 
                 return true;
+            }
+        });
+
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                googleMap.addMarker(new MarkerOptions().position(latLng));
+
+                playPinDropSound();
             }
         });
     }
@@ -123,12 +132,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void addMarker() {
+    private void addMarkerToCenter() {
         if (googleMap == null) {
             return;
         }
 
-        googleMap.addMarker(new MarkerOptions().position(googleMap.getCameraPosition().target).title("My location"));
+        addMarker(googleMap.getCameraPosition().target);
+    }
+
+    private void addMarker(LatLng latLng) {
+        googleMap.addMarker(new MarkerOptions().position(latLng));
 
         playPinDropSound();
     }
