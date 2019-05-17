@@ -2,17 +2,24 @@ package com.example.pindropper;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -28,10 +35,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	private GoogleMap mMap;
 	Context context;
+	
 	Button btnAddPin;
 	Button btnGoToYou;
 	Button btnDeleteAllPins;
 	MediaPlayer MPpinDrop;
+	
 	
 	public static final int PERMISSIONS_REQUEST_LOCATION = 3;
 	
@@ -39,19 +48,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maps);
-		// Obtain the SupportMapFragment and get notified when the map is ready to be used.
-		
-		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.map);
-		mapFragment.getMapAsync(this);
-		
-		context = this;
-		
-		MPpinDrop = MediaPlayer.create(this,R.raw.pindrop);
 		
 		btnAddPin = findViewById(R.id.btn_add_pin);
 		btnGoToYou = findViewById(R.id.btn_current_location);
 		btnDeleteAllPins = findViewById(R.id.btn_clear_all_pins);
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.map);
+		
+		
+		final SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+		final SharedPreferences.Editor editor = sharedPreferences.edit();
+		
+		
+		mapFragment.getMapAsync(this);
+		
+		
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+				this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
+		drawerLayout.addDrawerListener(toggle);
+		toggle.syncState();
+		
+		context = this;
+		
+		MPpinDrop = MediaPlayer.create(this, sharedPreferences.getInt("sound", R.raw.pindrop));
+		
+		NavigationView navigationView = findViewById(R.id.nav_view);
+		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+			@Override
+			public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+				menuItem.setChecked(true);
+				Toast.makeText(getBaseContext(), menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+				
+				switch(menuItem.getItemId()){
+					case R.id.pindrop:
+						
+						editor.putInt("sound", R.raw.pindrop);
+						break;
+					case R.id.soupdrop:
+						editor.putInt("sound", R.raw.soupdrop);
+						break;
+					case R.id.basketball:
+						editor.putInt("sound", R.raw.basketball);
+						break;
+					case R.id.pearldrop:
+						editor.putInt("sound", R.raw.pearldrop);
+						break;
+				}
+				editor.commit();
+				
+				MPpinDrop = MediaPlayer.create(context,sharedPreferences.getInt("sound",R.raw.pindrop));
+				return true;
+			}
+		});
+		
 		
 		btnAddPin.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -67,7 +118,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				mMap.clear();
 			}
 		});
-		
 		
 		
 		//check for permission
