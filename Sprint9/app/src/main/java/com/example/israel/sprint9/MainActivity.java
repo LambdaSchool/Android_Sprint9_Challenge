@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onSelectAudio(SettingsFragment.OnAudioSelectedListener l) {
         audioSelectedListener = l;
 
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("audio/*");
 
         ComponentName componentName = intent.resolveActivity(getPackageManager());
