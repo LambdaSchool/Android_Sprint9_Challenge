@@ -35,12 +35,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	
 	private GoogleMap mMap;
 	Context context;
-	
 	Button btnAddPin;
 	Button btnGoToYou;
 	Button btnDeleteAllPins;
-	MediaPlayer MPpinDrop;
-	
+	MediaPlayer mediaPlayer;
 	
 	public static final int PERMISSIONS_REQUEST_LOCATION = 3;
 	
@@ -48,33 +46,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_maps);
+		context = this;
 		
-		btnAddPin = findViewById(R.id.btn_add_pin);
-		btnGoToYou = findViewById(R.id.btn_current_location);
-		btnDeleteAllPins = findViewById(R.id.btn_clear_all_pins);
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+		btnAddPin					   = findViewById(R.id.btn_add_pin);
+		btnGoToYou 					   = findViewById(R.id.btn_current_location);
+		btnDeleteAllPins               = findViewById(R.id.btn_clear_all_pins);
+		NavigationView navigationView  = findViewById(R.id.nav_view);
+		Toolbar toolbar                = findViewById(R.id.toolbar);
+		DrawerLayout drawerLayout      = findViewById(R.id.drawer_layout);
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
-		
+		mapFragment.getMapAsync(this);
 		
 		final SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-		final SharedPreferences.Editor editor = sharedPreferences.edit();
+		final SharedPreferences.Editor editor     = sharedPreferences.edit();
 		
-		
-		mapFragment.getMapAsync(this);
+		mediaPlayer = MediaPlayer.create(this, sharedPreferences.getInt("sound", R.raw.pindrop));
 		
 		
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
 		drawerLayout.addDrawerListener(toggle);
 		toggle.syncState();
-		
-		context = this;
-		
-		MPpinDrop = MediaPlayer.create(this, sharedPreferences.getInt("sound", R.raw.pindrop));
-		
-		NavigationView navigationView = findViewById(R.id.nav_view);
+	
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -83,7 +77,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				
 				switch(menuItem.getItemId()){
 					case R.id.pindrop:
-						
 						editor.putInt("sound", R.raw.pindrop);
 						break;
 					case R.id.soupdrop:
@@ -98,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				}
 				editor.commit();
 				
-				MPpinDrop = MediaPlayer.create(context,sharedPreferences.getInt("sound",R.raw.pindrop));
+				mediaPlayer = MediaPlayer.create(context,sharedPreferences.getInt("sound",R.raw.pindrop));
 				return true;
 			}
 		});
@@ -108,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			@Override
 			public void onClick(View v) {
 				mMap.addMarker(new MarkerOptions().position(mMap.getCameraPosition().target).title("Marker Here!"));
-				MPpinDrop.start();
+				mediaPlayer.start();
 			}
 		});
 		
@@ -127,9 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			getLocation();
 		}
 		
-		
 	}
-	
 	
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -180,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			@Override
 			public void onMapLongClick(LatLng latLng) {
 				mMap.addMarker(new MarkerOptions().position(latLng).title("Marker Here!"));
-				MPpinDrop.start();
+				mediaPlayer.start();
 			}
 		});
 	}
