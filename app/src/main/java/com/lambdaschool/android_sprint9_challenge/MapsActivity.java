@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -64,33 +60,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-
-
-//        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, assetArrayList);
-//        stringArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-//        final Spinner spinner = findViewById(R.id.);
-//        spinner.setAdapter(stringArrayAdapter);
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                String assetText = null;
-//                String itemSelected = parent.getItemAtPosition(position).toString();
-//
-//                if (itemSelected.equals(DEFAULT_CIPHER)) {
-//                    assetText = getString(R.string.cipher);
-//                } else {
-//                    FileIO fileIO = new FileIO(context);
-//                    assetText = fileIO.readFileBuffered(itemSelected);
-//                }
-//                textViewCipher.setText(assetText);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
     }
-
 
     @Override
     public void onMapReady(GoogleMap gMap) {
@@ -177,6 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setBackground(null);
+        spinner.setSelection(sharedPreferencesSoundEffect);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
