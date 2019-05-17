@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int FINE_LOCATION_REQUEST_CODE = 1;
     private static final int MAP_CAMERA_ZOOM = 10;
     private static final int MAP_CAMERA_ZOOM_OUT = 2;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         context = this;
+        mediaPlayer = MediaPlayer.create(context, R.raw.uh_oh);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
     }
@@ -94,6 +97,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 LatLng defaultLocation = new LatLng(0,0);
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, MAP_CAMERA_ZOOM_OUT));
             }
+        }
+
+        if (id == R.id.action_add_marker) {
+                mMap.addMarker(new MarkerOptions().position(mMap.getCameraPosition().target));
+                mediaPlayer.start();
         }
         return super.onOptionsItemSelected(item);
     }
