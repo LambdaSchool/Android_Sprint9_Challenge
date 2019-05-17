@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -68,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case R.id.options_drop_pin:
                 LatLng position = mMap.getCameraPosition().target;
-                mMap.addMarker(new MarkerOptions().position(position).title("Custom Marker"));
+                mMap.addMarker(new MarkerOptions().position(position).title("Custom Marker").draggable(true));
                 mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
                 mediaPlayer.start();
         }
@@ -79,9 +80,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                marker.remove();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+
+            }
+        });
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").draggable(true));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
@@ -95,6 +112,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
+
+
     public void getLocation(){
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)  != PackageManager.PERMISSION_GRANTED){
             return;
@@ -104,8 +123,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(Location location) {
                 LatLng position = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 10f));
-                mMap.addMarker(new MarkerOptions().position(position).title("You are Here"));
+                mMap.addMarker(new MarkerOptions().position(position).title("You are Here").draggable(true));
             }
         });
     }
+
 }
