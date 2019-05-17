@@ -70,7 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		
 		
 		
-		
 		//check for permission
 		if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
@@ -126,5 +125,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		mMap = googleMap;
+		
+		mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+			@Override
+			public void onMapLongClick(LatLng latLng) {
+				mMap.addMarker(new MarkerOptions().position(latLng).title("Marker Here!"));
+				MPpinDrop.start();
+			}
+		});
 	}
 }
