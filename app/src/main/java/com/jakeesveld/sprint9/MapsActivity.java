@@ -3,11 +3,13 @@ package com.jakeesveld.sprint9;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import java.io.IOException;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int LOCATION_REQUEST_CODE = 12;
+    public static final int AUDIO_REQUEST_CODE = 19;
     private GoogleMap mMap;
     MediaPlayer mediaPlayer;
     Context context;
@@ -70,8 +73,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.options_drop_pin:
                 LatLng position = mMap.getCameraPosition().target;
                 mMap.addMarker(new MarkerOptions().position(position).title("Custom Marker").draggable(true));
-                mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
-                mediaPlayer.start();
+                if(mediaPlayer != null && mediaPlayer.getDuration() > 0){
+                    mediaPlayer.start();
+                }else {
+                    mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
+                    mediaPlayer.start();
+                }
+                break;
+            case R.id.options_change_sound:
+                mediaPlayer.reset();
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("audio/*");
+                startActivityForResult(intent, AUDIO_REQUEST_CODE);
         }
         return true;
     }
@@ -135,4 +148,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mediaPlayer.pause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == AUDIO_REQUEST_CODE && resultCode == RESULT_OK){
+            if(data != null){
+                Uri audioUri = data.getData();
+                mediaPlayer = MediaPlayer.create(context, audioUri);
+            }
+        }
+    }
 }
