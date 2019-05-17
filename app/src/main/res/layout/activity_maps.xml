@@ -11,8 +11,7 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="?attr/colorPrimary">
 
         <RelativeLayout
             android:id="@+id/relativeLayout2"
