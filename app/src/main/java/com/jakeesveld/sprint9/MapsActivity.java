@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +29,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.io.IOException;
+
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -76,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(mediaPlayer != null && mediaPlayer.getDuration() > 0){
                     mediaPlayer.start();
                 }else {
-                    mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
+                    mediaPlayer = MediaPlayer.create(context, R.raw.water_pin_drop);
                     mediaPlayer.start();
                 }
                 break;
