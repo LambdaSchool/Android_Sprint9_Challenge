@@ -24,19 +24,20 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    public static final int FINE_LOCATION_REQUEST_CODE = 5;
     Context context;
     Button iconFindLocation;
     Button iconDropPin;
     int     pin = 0;
     private GoogleMap mMap;
     private LatLng    latLng;
-    private Toolbar toolbar;
-    private MediaPlayer mediaPlayer;
+    private String lastClick = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         iconDropPin = findViewById(R.id.icon_drop_pin);
         iconFindLocation = findViewById(R.id.icon_find_location);
-        toolbar = findViewById(R.id.tool_bar);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
         setActionBar(toolbar);
         context = this;
         iconDropPin.setActivated(false);
@@ -58,12 +59,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        //setup map and activate toolbar buttons
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         iconDropPin.setActivated(true);
         iconFindLocation.setActivated(true);
 
-        mediaPlayer = MediaPlayer.create(context,R.raw.boink);
 
+        //drop pin on long click on map
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                dropPin(latLng);
+            }
+        });
+
+        //find location toolbar icon listener
         iconFindLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,15 +83,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        //drop pin toolbar icon listener
         iconDropPin.setSoundEffectsEnabled(false);
         iconDropPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                mediaPlayer.start();
                 final LatLng cameraCenter = mMap.getCameraPosition().target;
                 dropPin(cameraCenter);
+            }
+        });
+
+        //one click selects pin, two clicks removes it
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(lastClick.equals(marker.getId())) {
+                    marker.remove();
+                    return true;
+                }
+                lastClick = marker.getId();
+                return false;
             }
         });
     }
@@ -90,15 +113,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // request the permission
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5);
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_REQUEST_CODE);
         } else {
             getLocation();
         }
     }
 
-    @Override
+    @Override //handles getting permissions
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 5) {
+        if (requestCode == FINE_LOCATION_REQUEST_CODE) {
             if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLocation();
             }
@@ -116,26 +139,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onSuccess(final Location location) {
 
                 latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f)); //either works
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-
             }
         });
     }
 
     private void dropPin(LatLng location) {
-
         mMap.addMarker(new MarkerOptions().position(location).title("Your Location " + pin++));
+        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.boink);
+        mediaPlayer.start();
     }
 
-    @Override
+    @Override //inflates menu on toolbar
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-    @Override
+    @Override//handles selected items on toolbar
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -148,12 +169,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (id == R.id.menu_drop_pin) {
-            mediaPlayer.start();
+
             final LatLng cameraCenter = mMap.getCameraPosition().target;
             dropPin(cameraCenter);
         }
-
-
 
         return super.onOptionsItemSelected(item);
     }
