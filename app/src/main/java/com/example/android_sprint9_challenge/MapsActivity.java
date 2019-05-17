@@ -11,8 +11,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toolbar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -24,26 +27,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.io.IOException;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     Context context;
-    Button  findMyLocationButton;
-    Button  dropPinButton;
-    int pin = 0;
+    Button iconFindLocation;
+    Button iconDropPin;
+    int     pin = 0;
     private GoogleMap mMap;
     private LatLng    latLng;
+    private Toolbar toolbar;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        findMyLocationButton = findViewById(R.id.button_find_my_location);
-        dropPinButton = findViewById(R.id.button_drop_pin);
+        iconDropPin = findViewById(R.id.icon_drop_pin);
+        iconFindLocation = findViewById(R.id.icon_find_location);
+        toolbar = findViewById(R.id.tool_bar);
+        setActionBar(toolbar);
         context = this;
-        dropPinButton.setActivated(false);
-        findMyLocationButton.setActivated(false);
+        iconDropPin.setActivated(false);
+        iconFindLocation.setActivated(false);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -54,20 +59,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        dropPinButton.setActivated(true);
-        findMyLocationButton.setActivated(true);
+        iconDropPin.setActivated(true);
+        iconFindLocation.setActivated(true);
 
-        final MediaPlayer mediaPlayer = MediaPlayer.create(context,R.raw.boink);
+        mediaPlayer = MediaPlayer.create(context,R.raw.boink);
 
-        findMyLocationButton.setOnClickListener(new View.OnClickListener() {
+        iconFindLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getCurrentLocation();
             }
         });
 
-        dropPinButton.setSoundEffectsEnabled(false);
-        dropPinButton.setOnClickListener(new View.OnClickListener() {
+        iconDropPin.setSoundEffectsEnabled(false);
+        iconDropPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -122,5 +127,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void dropPin(LatLng location) {
 
         mMap.addMarker(new MarkerOptions().position(location).title("Your Location " + pin++));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.menu_find_location) {
+            getCurrentLocation();
+        }
+
+        if (id == R.id.menu_drop_pin) {
+            mediaPlayer.start();
+            final LatLng cameraCenter = mMap.getCameraPosition().target;
+            dropPin(cameraCenter);
+        }
+
+
+
+        return super.onOptionsItemSelected(item);
     }
 }
