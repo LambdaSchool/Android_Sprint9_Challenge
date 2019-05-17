@@ -46,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         iconDropPin = findViewById(R.id.icon_drop_pin);
         iconFindLocation = findViewById(R.id.icon_find_location);
         Toolbar toolbar = findViewById(R.id.tool_bar);
+        toolbar.setTitle("Maps");
         setActionBar(toolbar);
         context = this;
         iconDropPin.setActivated(false);
@@ -98,11 +99,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(lastClick.equals(marker.getId())) {
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.tink);
+                    mediaPlayer.start();
                     marker.remove();
                     return true;
                 }
                 lastClick = marker.getId();
-                return false;
+                marker.showInfoWindow();
+                return true;
             }
         });
     }
