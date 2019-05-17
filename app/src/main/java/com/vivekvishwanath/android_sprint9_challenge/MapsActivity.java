@@ -3,9 +3,11 @@ package com.vivekvishwanath.android_sprint9_challenge;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -23,8 +25,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.io.IOException;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -35,6 +40,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int FINE_LOCATION_REQUEST_CODE = 1;
     private static final int MAP_CAMERA_ZOOM = 10;
     private static final int MAP_CAMERA_ZOOM_OUT = 2;
+    public static final int MEDIA_REQUEST_CODE = 2;
     private MediaPlayer mediaPlayer;
 
     @Override
@@ -103,7 +109,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions().position(mMap.getCameraPosition().target));
                 mediaPlayer.start();
         }
+
+        if(id == R.id.action_set_audio) {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("audio/*");
+
+            startActivityForResult(intent, MEDIA_REQUEST_CODE);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MEDIA_REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(context, data.getData());
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void getLocation() {
