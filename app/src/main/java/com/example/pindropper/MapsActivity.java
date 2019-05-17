@@ -30,6 +30,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	Context context;
 	Button btnAddPin;
 	Button btnGoToYou;
+	Button btnDeleteAllPins;
 	MediaPlayer MPpinDrop;
 	
 	public static final int PERMISSIONS_REQUEST_LOCATION = 3;
@@ -50,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		
 		btnAddPin = findViewById(R.id.btn_add_pin);
 		btnGoToYou = findViewById(R.id.btn_current_location);
+		btnDeleteAllPins = findViewById(R.id.btn_clear_all_pins);
 		
 		btnAddPin.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -58,6 +60,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				MPpinDrop.start();
 			}
 		});
+		
+		btnDeleteAllPins.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mMap.clear();
+			}
+		});
+		
+		
 		
 		
 		//check for permission
