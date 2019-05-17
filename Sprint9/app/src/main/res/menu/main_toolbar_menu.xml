@@ -9,4 +9,8 @@
         android:id="@+id/main_toolbar_add_marker"
         android:title="Add marker"/>
 
+    <item
+        android:id="@+id/main_toolbar_settings"
+        android:title="Settings"/>
+
 </menu>
