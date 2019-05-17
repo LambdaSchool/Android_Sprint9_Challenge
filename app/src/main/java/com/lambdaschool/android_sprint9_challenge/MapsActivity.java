@@ -54,8 +54,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+    public void onMapReady(GoogleMap gMap) {
+        this.googleMap = gMap;
+
+        this.googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker at " + latLng.toString()));
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        marker.remove();
+                        return true;
+                    }
+                });
+
+                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
+                mediaPlayer.start();
+            }
+        });
 
         // Add a marker in Seattle and move the camera
         LatLng seattle = new LatLng(47.6, -122.3);
@@ -135,7 +154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(target));
 
-                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.sound_effect_5);
+                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound_effect_5);
                 mediaPlayer.start();
 
                 break;
