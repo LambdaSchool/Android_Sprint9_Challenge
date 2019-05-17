@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -34,6 +35,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Context context;
     FusedLocationProviderClient fusedLocationProviderClient;
     int markerNumber = 0;
+    LatLng position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 break;
             case R.id.place_pin:
-                LatLng position = mMap.getCameraPosition().target;
+                position = mMap.getCameraPosition().target;
                 markerNumber++;
                 mMap.addMarker(new MarkerOptions().position(position).title("Added marker "+ markerNumber));
                 mediaPlayer = MediaPlayer.create(context, R.raw.pin_drop);
                 mediaPlayer.start();
+                break;
+            case R.id.remove_pin:
+                mMap.clear();
+
+
+
 
         }
         return true;
@@ -80,8 +88,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         LatLng sydney = new LatLng(-34, 151);
+
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.remove();
+                return true;
+            }
+        });
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -112,5 +129,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions().position(position).title("Your Location"));
             }
         });
+    }
+    public void removemarkerManager(Marker position){
+               position.remove();
+
     }
 }
