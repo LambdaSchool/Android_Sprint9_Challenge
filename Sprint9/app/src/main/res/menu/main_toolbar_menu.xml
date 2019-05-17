@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/main_toolbar_center"
-        android:title="Center"/>
+        android:title="Center to my location"/>
 
     <item
         android:id="@+id/main_toolbar_add_marker"
-        android:title="Add marker"/>
+        android:title="Add marker to center"/>
 
     <item
         android:id="@+id/main_toolbar_settings"
