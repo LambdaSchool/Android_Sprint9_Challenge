@@ -6,10 +6,16 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +50,7 @@ public class MapsActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById( R.id.toolbar );
 
         player=MediaPlayer.create( this,R.raw.po );
+
     /*    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
         intent.setType("audio/*");
@@ -77,6 +84,28 @@ public class MapsActivity extends AppCompatActivity implements
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.lite_list_menu, menu);
+        return true;
+    }
+
+    boolean bPin=false;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.enablePin:
+                bPin=true;
+                break;
+            case R.id.disablePin:
+                bPin=false;
+                break;
+        }
+        return true;
+    }
+
+
 
     /**
      * Manipulates the map once available.
@@ -121,10 +150,13 @@ public class MapsActivity extends AppCompatActivity implements
     int iCounter=0;
     @Override
     public void onMapLongClick(LatLng latLng) {
-        mMap.addMarker( new MarkerOptions()
-                .position(latLng).title( Integer.toString( iCounter++ ) )
-                .snippet( latLng.toString()) );
-        player.start();
+        if(bPin==true){
+            mMap.addMarker( new MarkerOptions()
+                    .position(latLng).title( Integer.toString( iCounter++ ) )
+                    .snippet( latLng.toString()) );
+            player.start();
+
+        }
 
     }
 
