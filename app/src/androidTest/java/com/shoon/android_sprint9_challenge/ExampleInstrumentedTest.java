@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals( "com.shoon.android_sprint9_challenge", appContext.getPackageName() );
+        assertEquals("com.shoon.android_sprint9_challenge", appContext.getPackageName());
     }
 }
