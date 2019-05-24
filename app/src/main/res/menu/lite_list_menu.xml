@@ -28,4 +28,10 @@
         android:title="Prohibit adding pin"
         app:showAsAction="never" />
 
+
+    <item
+        android:id="@+id/addPin"
+        android:title="Add pin on current location"
+        app:showAsAction="never" />
+
 </menu>
