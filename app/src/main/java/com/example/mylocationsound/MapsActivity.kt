@@ -11,11 +11,16 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.location.LocationManagerCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -33,26 +38,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_maps.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationView.OnNavigationItemSelectedListener {
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        when(p0.itemId){
-            R.id.mSeeMyLocation -> {
-                loadMapData()
-                audioExoPlayer.playWhenReady = true
-            }
-            R.id.mSeeMyLocationWithoutMusic -> {
-                loadMapData()
-            }
-            R.id.mStopMusic -> {
-                audioExoPlayer.playWhenReady = false
-            }
-        }
-       return true
-    }
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
 
     private lateinit var mMap: GoogleMap
 
+    private var drawerLayout: DrawerLayout? = null
+
     lateinit var audioExoPlayer: SimpleExoPlayer
+
 
     val URL = "https://ia601504.us.archive.org/25/items/Surco2019-10-05.oktava.flac16/surco2019-10-05d1t01.mp3"
 
@@ -73,7 +67,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationVi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        navigation.setOnNavigationItemSelectedListener(this)
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        //setSupportActionBar(toolbar)
+        toolbar.title = title
+        // TODO 3: get handle to drawer layout and bind to toolbar toggle
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
+
+        drawerLayout?.addDrawerListener(toggle)
+        toggle.syncState()
+
 
         createAideoPlayer()
 
@@ -81,12 +84,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationVi
 
        // playerView.player = videoExoPlayer
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        buttonFindLocation= findViewById<Button>(R.id.btn_find_location)
-        handler= Handler()
-        buttonFindLocation.setOnClickListener {
-            loadMapData()
-            audioExoPlayer.playWhenReady = true
-        }
+
 
 
         /*  // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -234,6 +232,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationVi
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item?.itemId){
+            R.id.mSeeMyLocation ->{
+                loadMapData()
+            }
+            R.id.mSeeMyLocationWithoutMusic ->{
+                loadMapData()
+            }
+            R.id.mStopMusic ->{
+                loadMapData()
+            }
+
+        }
+
+
+        return super.onOptionsItemSelected(item)
     }
 }
 
