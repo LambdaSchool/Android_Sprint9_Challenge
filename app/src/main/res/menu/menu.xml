@@ -5,7 +5,17 @@
             <item
                 android:id="@+id/mSeeMyLocation"
                 android:checkable="true"
-                android:title="@string/see_my_location" />
+                android:title="@string/see_location_with_music" />
+
+        <item
+            android:id="@+id/mSeeMyLocationWithoutMusic"
+            android:checkable="true"
+            android:title="@string/see_location_without_music" />
+
+        <item
+            android:id="@+id/mStopMusic"
+            android:checkable="true"
+            android:title="@string/stop_music"/>
 
         </group>
 

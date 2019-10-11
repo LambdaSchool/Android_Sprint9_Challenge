@@ -40,6 +40,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationVi
                 loadMapData()
                 audioExoPlayer.playWhenReady = true
             }
+            R.id.mSeeMyLocationWithoutMusic -> {
+                loadMapData()
+            }
+            R.id.mStopMusic -> {
+                audioExoPlayer.playWhenReady = false
+            }
         }
        return true
     }
@@ -157,7 +163,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationVi
     private fun gpsTracker(googleMap1: GoogleMap){
         if (gpsTracker.canGetLoaction()) {
             locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            location = locationManager.getLastKnownLocation(NETWORK_PROVIDER)
+           location = locationManager.getLastKnownLocation(NETWORK_PROVIDER)
             gpsTracker.onLocationChanged(location)
 
             latitude = gpsTracker.getLatitude()
