@@ -3,4 +3,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="key">AIzaSyBelyLkvg8aR44yWSiulKmBf0mKLPFPIeE</string>
     <string name="see_my_location">See My Location</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
 </resources>
