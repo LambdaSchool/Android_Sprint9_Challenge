@@ -11,6 +11,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
@@ -29,8 +30,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_maps.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, BottomNavigationView.OnNavigationItemSelectedListener {
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+        when(p0.itemId){
+            R.id.mSeeMyLocation -> {
+                loadMapData()
+                audioExoPlayer.playWhenReady = true
+            }
+        }
+       return true
+    }
 
     private lateinit var mMap: GoogleMap
 
@@ -54,6 +66,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        navigation.setOnNavigationItemSelectedListener(this)
 
         createAideoPlayer()
 
