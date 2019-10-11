@@ -1,7 +1,9 @@
 package com.lambdaschool.additionalandroidsprintchallenge
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private var mediaPlayer: MediaPlayer? = null
 
     companion object {
         private const val FINE_LOCATION_REQUEST_CODE = 5
@@ -33,6 +36,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.button_click_sound_effect)
     }
 
     /**
@@ -89,6 +94,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Add Marker
         if (id == R.id.menu_marker) {
             mMap.addMarker(MarkerOptions().position(mMap.cameraPosition.target))
+            // Add audio track when pin is dropped
+            mediaPlayer?.start()
         }
         return super.onOptionsItemSelected(item)
     }
