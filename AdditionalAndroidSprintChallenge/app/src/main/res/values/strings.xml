@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="add_marker">Add Marker</string>
     <string name="centering_user">Centering User</string>
+    <string name="set_audio">Set Marker Sound</string>
 </resources>

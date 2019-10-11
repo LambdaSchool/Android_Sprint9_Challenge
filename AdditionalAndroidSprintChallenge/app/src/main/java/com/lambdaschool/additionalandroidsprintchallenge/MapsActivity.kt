@@ -27,6 +27,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     companion object {
         private const val FINE_LOCATION_REQUEST_CODE = 5
+        private const val MEDIA_REQUEST_CODE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +57,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.setOnMarkerClickListener { marker ->
             marker.remove()
             true
+        }
+
+        mMap.setOnMapLongClickListener { latLng ->
+            mMap.addMarker(MarkerOptions().position(latLng))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            mediaPlayer?.start()
         }
 
         // Add a marker for Lambda School and move the camera
@@ -102,6 +109,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addMarker(MarkerOptions().position(mMap.cameraPosition.target))
             // Add audio track when pin is dropped
             mediaPlayer?.start()
+        }
+
+        if (id == R.id.menu_set_audio) {
+            val setAudioIntent = Intent(Intent.ACTION_GET_CONTENT)
+            setAudioIntent.type = "audio/*"
+
+            startActivityForResult(setAudioIntent, MEDIA_REQUEST_CODE)
         }
         return super.onOptionsItemSelected(item)
     }
