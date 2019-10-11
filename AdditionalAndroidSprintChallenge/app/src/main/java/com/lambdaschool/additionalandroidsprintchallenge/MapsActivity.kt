@@ -52,6 +52,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        // Remove marker when clicked
+        mMap.setOnMarkerClickListener { marker ->
+            marker.remove()
+            true
+        }
+
         // Add a marker for Lambda School and move the camera
         val lambdaLocation = LatLng(37.791580, -122.402280)
         mMap.addMarker(MarkerOptions().position(lambdaLocation).title("Lambda School"))
