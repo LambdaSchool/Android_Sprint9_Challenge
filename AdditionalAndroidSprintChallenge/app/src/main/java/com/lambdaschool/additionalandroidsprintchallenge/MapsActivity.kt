@@ -36,11 +36,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // Request for permission
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
             FINE_LOCATION_REQUEST_CODE)
 
+        // Add sound effect for drop pin
         mediaPlayer = MediaPlayer.create(this, R.raw.button_click_sound_effect)
     }
 
