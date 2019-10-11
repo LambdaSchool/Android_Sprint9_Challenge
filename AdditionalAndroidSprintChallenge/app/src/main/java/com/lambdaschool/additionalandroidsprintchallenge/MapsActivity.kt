@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
@@ -59,6 +57,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
 
+        // Long press to set pin
         mMap.setOnMapLongClickListener { latLng ->
             mMap.addMarker(MarkerOptions().position(latLng))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
@@ -82,8 +81,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Centering User Location
         if (id == R.id.menu_location) {
-            if (!item.isChecked) {
-                if (ActivityCompat.checkSelfPermission(
+            if (item.isChecked) {
+                if (ContextCompat.checkSelfPermission(
                         this,
                         Manifest.permission.ACCESS_FINE_LOCATION
                     ) == PackageManager.PERMISSION_GRANTED
