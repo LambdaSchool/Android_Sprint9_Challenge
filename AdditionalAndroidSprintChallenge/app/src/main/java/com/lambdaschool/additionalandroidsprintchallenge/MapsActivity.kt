@@ -87,14 +87,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Centering User Location
         if (id == R.id.menu_location) {
             if (item.isChecked) {
-                if (ContextCompat.checkSelfPermission(
+                ContextCompat.checkSelfPermission(
                         this,
                         Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED)
-                else {
-                    getLocation()
-                    item.isChecked = true
-                }
+                    ) == PackageManager.PERMISSION_GRANTED
+                getLocation()
+                item.isChecked = true
+
             } else {
                 item.isChecked = false
                 val location = LatLng(37.791580, -122.402280)
