@@ -1,8 +1,16 @@
 package com.lambdaschool.additionalandroidsprintchallenge
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,6 +21,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+
+    companion object {
+        private const val FINE_LOCATION_REQUEST_CODE = 5
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +47,62 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        // Add a marker for Lambda School and move the camera
+        val lambdaLocation = LatLng(37.791580, -122.402280)
+        mMap.addMarker(MarkerOptions().position(lambdaLocation).title("Lambda School"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lambdaLocation))
+    }
+
+    // Inflate toolbar menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        // Centering User Location
+        if (id == R.id.menu_location) {
+            if (!item.isChecked) {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        FINE_LOCATION_REQUEST_CODE
+                    )
+                } else {
+                    getLocation()
+                    item.isChecked = true
+                }
+            } else {
+                item.isChecked = false
+                val location = LatLng(37.791580, -122.402280)
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+            }
+        }
+
+        // Add Marker
+        if (id == R.id.menu_marker) {
+            mMap.addMarker(MarkerOptions().position(mMap.cameraPosition.target))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val locationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+            locationProviderClient.lastLocation.addOnSuccessListener {
+                if (it != null) {
+                    val mylocation = LatLng(it.latitude, it.longitude)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mylocation))
+                }
+            }
+        }
     }
 }
