@@ -36,6 +36,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            FINE_LOCATION_REQUEST_CODE)
+
         mediaPlayer = MediaPlayer.create(this, R.raw.button_click_sound_effect)
     }
 
@@ -85,14 +90,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (ContextCompat.checkSelfPermission(
                         this,
                         Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        FINE_LOCATION_REQUEST_CODE
-                    )
-                } else {
+                    ) == PackageManager.PERMISSION_GRANTED)
+                else {
                     getLocation()
                     item.isChecked = true
                 }
