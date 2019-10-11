@@ -87,10 +87,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Centering User Location
         if (id == R.id.menu_location) {
             if (item.isChecked) {
-                ContextCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
                 getLocation()
                 item.isChecked = true
 
@@ -108,10 +104,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mediaPlayer?.start()
         }
 
+        // Add audio
         if (id == R.id.menu_set_audio) {
             val setAudioIntent = Intent(Intent.ACTION_GET_CONTENT)
             setAudioIntent.type = "audio/*"
-
             startActivityForResult(setAudioIntent, MEDIA_REQUEST_CODE)
         }
         return super.onOptionsItemSelected(item)
