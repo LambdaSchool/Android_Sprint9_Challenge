@@ -154,7 +154,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // Add a marker in Sydney and move the camera
             Handler().postDelayed({
                 val pune = LatLng(latitude, longitude)
-                mMap.addMarker(MarkerOptions().position(pune).title("Marker in Pune"))
+                mMap.addMarker(MarkerOptions().position(pune).title("Oh geez! You found me at my adress!\n Please enjoy the music\n While i go hide again"))
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(pune))
                 mMap.animateCamera(CameraUpdateFactory.zoomIn())
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f))
