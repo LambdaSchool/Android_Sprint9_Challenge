@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationManager.NETWORK_PROVIDER
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +15,13 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,6 +33,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+
+    lateinit var audioExoPlayer: SimpleExoPlayer
+
+    val URL = "https://ia601504.us.archive.org/25/items/Surco2019-10-05.oktava.flac16/surco2019-10-05d1t01.mp3"
 
     private  lateinit var buttonFindLocation: Button
     private lateinit var  mapFragment: SupportMapFragment
@@ -42,16 +54,52 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        createAideoPlayer()
+
+        setupVideoPlayerWithURL()
+
+       // playerView.player = videoExoPlayer
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         buttonFindLocation= findViewById<Button>(R.id.btn_find_location)
         handler= Handler()
-        buttonFindLocation.setOnClickListener { loadMapData() }
+        buttonFindLocation.setOnClickListener {
+            loadMapData()
+            audioExoPlayer.playWhenReady = true
+        }
 
 
         /*  // Obtain the SupportMapFragment and get notified when the map is ready to be used.
           val mapFragment = supportFragmentManager
               .findFragmentById(R.id.map) as SupportMapFragment
           mapFragment.getMapAsync(this)*/
+    }
+    fun setupVideoPlayerWithURL() {
+        audioExoPlayer.prepare(createUrlMediaSource(URL))
+    }
+    fun createUrlMediaSource(url: String): MediaSource {
+        val userAgent = Util.getUserAgent(this, getString(R.string.app_name))
+        return ExtractorMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))
+            .setExtractorsFactory(DefaultExtractorsFactory())
+            .createMediaSource(Uri.parse(url))
+    }
+    fun createAideoPlayer() {
+        // Need a track selector
+        val trackSelector = DefaultTrackSelector()
+        // Need a load control
+        val loadControl = DefaultLoadControl()
+        // Need a renderers factory
+        val renderFact = DefaultRenderersFactory(this)
+        // Set up the ExoPlayer
+        audioExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderFact, trackSelector, loadControl)
+
+        // Set up the scaling mode to crop and fit the video to the screen
+        audioExoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+
+    }
+    override fun onStop() {
+        super.onStop()
+        audioExoPlayer.stop()
     }
     private fun loadMapData() {
         mapFragment = supportFragmentManager
