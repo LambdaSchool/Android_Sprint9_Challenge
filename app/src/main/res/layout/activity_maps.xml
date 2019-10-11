@@ -1,55 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.drawerlayout.widget.DrawerLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:id="@+id/drawer_layout"
+<androidx.constraintlayout.widget.ConstraintLayout
+
     xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+
     xmlns:map="http://schemas.android.com/apk/res-auto"
+
+    android:layout_height="match_parent"
+
+    tools:context=".MapsActivity"
+
     xmlns:tools="http://schemas.android.com/tools">
 
+    <fragment
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:fitsSystemWindows="true">
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+
+        android:id="@+id/map"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            map:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </com.google.android.material.appbar.AppBarLayout>
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        map:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        map:layout_constraintLeft_toLeftOf="parent"
 
+        map:layout_constraintRight_toRightOf="parent"
 
+        map:layout_constraintTop_toTopOf="parent"
 
-        <include layout="@layout/map"/>
-    </FrameLayout>
+        map:layout_constraintBottom_toBottomOf="parent"
 
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+    <Button
 
+        android:layout_width="200dp"
 
+        map:layout_constraintLeft_toLeftOf="parent"
 
+        map:layout_constraintRight_toRightOf="parent"
 
+        map:layout_constraintBottom_toBottomOf="parent"
 
+        android:padding="20dp"
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        map:menu="@menu/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true" />
-    </androidx.drawerlayout.widget.DrawerLayout>
+        android:id="@+id/btn_find_location"
+
+        android:text="@string/see_my_location"
+
+        android:layout_height="wrap_content" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

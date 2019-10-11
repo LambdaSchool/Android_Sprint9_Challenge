@@ -1,21 +1,19 @@
 package com.example.mylocationsound
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.location.LocationManager.NETWORK_PROVIDER
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-
-import androidx.drawerlayout.widget.DrawerLayout
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,13 +21,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.navigation.NavigationView
 
-abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    abstract var buttonFindLocation: NavigationView
+    private  lateinit var buttonFindLocation: Button
     private lateinit var  mapFragment: SupportMapFragment
     private lateinit var gpsTracker: GpsTracker
     private var latitude: Double = 0.toDouble()
@@ -42,40 +39,19 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     val ACCESS_FINE_LOCATION = 1
     val ACCESS_COARSE_LOCATION= 2
 
-    private var drawerLayout: DrawerLayout? = null
-
-    private var currentType: Int = 0
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // this will assign our toolbar xml to be the system toolbar
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-      //  setSupportActionBar(toolbar)
-        toolbar.title = title
-        // TODO 3: get handle to drawer layout and bind to toolbar toggle
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
-        drawerLayout?.addDrawerListener(toggle)
-        toggle.syncState()
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            menuItem.isChecked = true
-            when (menuItem.itemId){
-                R.id.mSeeMyLocation -> {
-                 loadMapData()
-                }
-            }
-            true
-        }
-
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        buttonFindLocation= findViewById<Button>(R.id.btn_find_location)
+        handler= Handler()
+        buttonFindLocation.setOnClickListener { loadMapData() }
+
+
+        /*  // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+          val mapFragment = supportFragmentManager
+              .findFragmentById(R.id.map) as SupportMapFragment
+          mapFragment.getMapAsync(this)*/
     }
     private fun loadMapData() {
         mapFragment = supportFragmentManager
@@ -83,7 +59,6 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         gpsTracker = GpsTracker(this)
     }
-
 
     /**
      * Manipulates the map once available.
@@ -96,7 +71,6 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -116,16 +90,12 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             gpsTracker(googleMap)
             //googleMap= googleMap1
         }
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
     private fun gpsTracker(googleMap1: GoogleMap){
         if (gpsTracker.canGetLoaction()) {
             locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            location = locationManager.getLastKnownLocation(NETWORK_PROVIDER)
             gpsTracker.onLocationChanged(location)
 
             latitude = gpsTracker.getLatitude()
@@ -136,7 +106,7 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             // Add a marker in Sydney and move the camera
             Handler().postDelayed({
                 val pune = LatLng(latitude, longitude)
-                mMap.addMarker(MarkerOptions().position(pune).title("Marker in oh no, not where I am at but darn close"))
+                mMap.addMarker(MarkerOptions().position(pune).title("Marker in Pune"))
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(pune))
                 mMap.animateCamera(CameraUpdateFactory.zoomIn())
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f))
@@ -198,3 +168,4 @@ abstract class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 }
+
