@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import androidx.annotation.RawRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -26,7 +27,10 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import com.google.android.exoplayer2.util.Util
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -44,11 +48,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private var drawerLayout: DrawerLayout? = null
-
     lateinit var audioExoPlayer: SimpleExoPlayer
 
 
-    val URL = "https://ia601504.us.archive.org/25/items/Surco2019-10-05.oktava.flac16/surco2019-10-05d1t01.mp3"
+    val URL = "bheltborg.dk/Windows/Media/Ring10.wav"
 
     private  lateinit var buttonFindLocation: Button
     private lateinit var  mapFragment: SupportMapFragment
@@ -67,6 +70,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
+
+
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         //setSupportActionBar(toolbar)
         toolbar.title = title
@@ -78,10 +84,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         toggle.syncState()
 
 
-        createAideoPlayer()
-
-        setupVideoPlayerWithURL()
-
        // playerView.player = videoExoPlayer
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
@@ -91,30 +93,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
           val mapFragment = supportFragmentManager
               .findFragmentById(R.id.map) as SupportMapFragment
           mapFragment.getMapAsync(this)*/
+    setupVideoPlayerWithURL()
     }
+
+
     fun setupVideoPlayerWithURL() {
         audioExoPlayer.prepare(createUrlMediaSource(URL))
-    }
+  }
+ // fun setupVideoPlayerFromFileSystem() {
+ //     audioExoPlayer.prepare(createRawMediaSource(R.raw.radiosound))
+ // }
     fun createUrlMediaSource(url: String): MediaSource {
         val userAgent = Util.getUserAgent(this, getString(R.string.app_name))
         return ExtractorMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))
             .setExtractorsFactory(DefaultExtractorsFactory())
             .createMediaSource(Uri.parse(url))
     }
-    fun createAideoPlayer() {
-        // Need a track selector
-        val trackSelector = DefaultTrackSelector()
-        // Need a load control
-        val loadControl = DefaultLoadControl()
-        // Need a renderers factory
-        val renderFact = DefaultRenderersFactory(this)
-        // Set up the ExoPlayer
-        audioExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderFact, trackSelector, loadControl)
+  //fun createRawMediaSource(@RawRes rawId: Int): MediaSource {
+  //    val rawResourceDataSource = RawResourceDataSource(this)
+  //    val dataSpec = DataSpec(RawResourceDataSource.buildRawResourceUri(rawId))
+  //    rawResourceDataSource.open(dataSpec)
+  //    return ExtractorMediaSource.Factory(DataSource.Factory {
+  //        rawResourceDataSource
+  //    }).createMediaSource(rawResourceDataSource.uri)
+  //}
+   fun createAideoPlayer() {
+       // Need a track selector
+       val trackSelector = DefaultTrackSelector()
+       // Need a load control
+       val loadControl = DefaultLoadControl()
+       // Need a renderers factory
+       val renderFact = DefaultRenderersFactory(this)
+       // Set up the ExoPlayer
+       audioExoPlayer = ExoPlayerFactory.newSimpleInstance(this, renderFact, trackSelector, loadControl)
+       // Set up the scaling mode to crop and fit the video to the screen
+     //  audioExoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 
-        // Set up the scaling mode to crop and fit the video to the screen
-        audioExoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-
-    }
+  }
     override fun onStop() {
         super.onStop()
         audioExoPlayer.stop()
@@ -243,12 +258,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         when(item?.itemId){
             R.id.mSeeMyLocation ->{
                 loadMapData()
+               audioExoPlayer.playWhenReady = true
             }
             R.id.mSeeMyLocationWithoutMusic ->{
                 loadMapData()
             }
             R.id.mStopMusic ->{
                 loadMapData()
+                audioExoPlayer.playWhenReady = false
             }
 
         }
