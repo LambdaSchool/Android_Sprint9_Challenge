@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationManager.NETWORK_PROVIDER
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -48,8 +49,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
     private var drawerLayout: DrawerLayout? = null
-    lateinit var audioExoPlayer: SimpleExoPlayer
-
+   // lateinit var audioExoPlayer: SimpleExoPlayer
+   var player: MediaPlayer? = null
 
     val URL = "bheltborg.dk/Windows/Media/Ring10.wav"
 
@@ -70,7 +71,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-
+        player = MediaPlayer.create(this, R.raw.radiosound)
 
 
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -93,23 +94,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
           val mapFragment = supportFragmentManager
               .findFragmentById(R.id.map) as SupportMapFragment
           mapFragment.getMapAsync(this)*/
-    createAideoPlayer()
-    setupVideoPlayerWithURL()
+
     }
 
 
-    fun setupVideoPlayerWithURL() {
-        audioExoPlayer.prepare(createUrlMediaSource(URL))
-  }
+ //   fun setupVideoPlayerWithURL() {
+ //       audioExoPlayer.prepare(createUrlMediaSource(URL))
+ // }
  // fun setupVideoPlayerFromFileSystem() {
  //     audioExoPlayer.prepare(createRawMediaSource(R.raw.radiosound))
  // }
-    fun createUrlMediaSource(url: String): MediaSource {
+ /*  fun createUrlMediaSource(url: String): MediaSource {
         val userAgent = Util.getUserAgent(this, getString(R.string.app_name))
         return ExtractorMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))
             .setExtractorsFactory(DefaultExtractorsFactory())
             .createMediaSource(Uri.parse(url))
-    }
+    }*/
   //fun createRawMediaSource(@RawRes rawId: Int): MediaSource {
   //    val rawResourceDataSource = RawResourceDataSource(this)
   //    val dataSpec = DataSpec(RawResourceDataSource.buildRawResourceUri(rawId))
@@ -118,7 +118,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
   //        rawResourceDataSource
   //    }).createMediaSource(rawResourceDataSource.uri)
   //}
-   fun createAideoPlayer() {
+  /* fun createAideoPlayer() {
        // Need a track selector
        val trackSelector = DefaultTrackSelector()
        // Need a load control
@@ -130,10 +130,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
        // Set up the scaling mode to crop and fit the video to the screen
      //  audioExoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 
-  }
+  }*/
     override fun onStop() {
         super.onStop()
-        audioExoPlayer.stop()
+     player?.stop()
+        //audioExoPlayer.stop()
     }
     private fun loadMapData() {
         mapFragment = supportFragmentManager
@@ -259,14 +260,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         when(item?.itemId){
             R.id.mSeeMyLocation ->{
                 loadMapData()
-               audioExoPlayer.playWhenReady = true
+                player?.start()
             }
             R.id.mSeeMyLocationWithoutMusic ->{
                 loadMapData()
             }
             R.id.mStopMusic ->{
                 loadMapData()
-                audioExoPlayer.playWhenReady = false
+                player?.stop()
             }
 
         }
