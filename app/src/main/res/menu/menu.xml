@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+            <item
+                android:id="@+id/mSeeMyLocation"
+                android:checkable="true"
+                android:title="@string/see_location_with_music" />
+
+        <item
+            android:id="@+id/mSeeMyLocationWithoutMusic"
+            android:checkable="true"
+            android:title="@string/see_location_without_music" />
+
+        <item
+            android:id="@+id/mStopMusic"
+            android:checkable="true"
+            android:title="@string/stop_music"/>
+
+        </group>
+
+</menu>

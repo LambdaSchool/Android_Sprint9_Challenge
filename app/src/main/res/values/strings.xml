@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MyLocationSound</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="key">AIzaSyBelyLkvg8aR44yWSiulKmBf0mKLPFPIeE</string>
+    <string name="see_my_location">See My Location</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
+    <string name="see_location_with_music">See Location with Music</string>
+    <string name="see_location_without_music">See Location without Music</string>
+    <string name="stop_music">STOP MUSIC</string>
+</resources>
